@@ -169,7 +169,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select count (*) from log_entries where request_ts >= $__timeFrom() AND request_ts <= $__timeTo() ;",
+          "rawSql": "select count (*) from log_entries t\r\nWHERE $__timeFilter(t.request_ts) AND \r\n  t.question_type in ($dns_type) AND\r\n  t.client_name in ($client_name) AND \r\n  t.response_type in ($response_type) AND \r\n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\r\n;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -247,7 +247,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select count (*) from log_entries where response_type='BLOCKED' AND request_ts >= $__timeFrom() AND request_ts <= $__timeTo() ;",
+          "rawSql": "select count (*) from log_entries t\r\nwhere response_type='BLOCKED' AND \r\n  $__timeFilter(t.request_ts) AND \r\n  t.question_type in ($dns_type) AND\r\n  t.client_name in ($client_name) AND \r\n  t.response_type in ($response_type) AND \r\n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\r\n;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -326,7 +326,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n    response_type, \n    (100 * num/sum(num) over ()) as perc\nFROM (\n    SELECT response_type, count(response_type) as num\n    FROM log_entries\n    where request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \n    GROUP BY response_type\n    ) log_entries\n",
+          "rawSql": "SELECT\n    response_type, \n    (100 * num/sum(num) over ()) as perc\nFROM (\n    SELECT response_type, count(response_type) as num\n    FROM log_entries t\n    WHERE $__timeFilter(t.request_ts) AND \n      t.question_type in ($dns_type) AND\n      t.client_name in ($client_name) AND \n      t.response_type in ($response_type) AND \n      (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n    GROUP BY response_type\n    ) log_entries\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -424,7 +424,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select count(distinct client_name) FROM log_entries where request_ts >= $__timeFrom() AND request_ts <= $__timeTo() ;",
+          "rawSql": "select count(distinct client_name) FROM log_entries t\r\nWHERE $__timeFilter(t.request_ts) AND \r\n  t.question_type in ($dns_type) AND\r\n  t.client_name in ($client_name) AND \r\n  t.response_type in ($response_type) AND \r\n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\r\n;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -530,7 +530,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select \ndate_trunc('hour', request_ts) + date_part('minute', request_ts)::int / 5 * interval '5 min' as time\n, response_type, count(*) \nfrom log_entries \nwhere request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \ngroup by time, response_type \norder by time asc;",
+          "rawSql": "select \n  $__timeGroupAlias(t.request_Ts, '5m'), \n  response_type, count(*)\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, response_type \norder by time asc;",
           "refId": "response",
           "sql": {
             "columns": [
@@ -643,7 +643,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select \ndate_trunc('hour', request_ts) + date_part('minute', request_ts)::int / 5 * interval '5 min' as time\n, client_name, count(*) \nfrom log_entries \nwhere request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \ngroup by time, client_name \norder by time asc;",
+          "rawSql": "select \n  $__timeGroupAlias(t.request_Ts, '5m'), \n  client_name, count(*)\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, client_name \norder by time asc;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -735,7 +735,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT question_type, COUNT(*) FROM log_entries\nwhere request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \nGROUP BY question_type ;",
+          "rawSql": "SELECT question_type, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_type ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -818,7 +818,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT reason, COUNT(*) FROM log_entries \nwhere request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \nGROUP BY reason;  ",
+          "rawSql": "SELECT reason, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY reason;  ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -839,7 +839,7 @@
           }
         }
       ],
-      "title": "Panel Title",
+      "title": "Upstream servers",
       "type": "piechart"
     },
     {
@@ -903,7 +903,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries \nwhere response_type!='BLOCKED' and request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \nGROUP BY question_name ORDER by count desc LIMIT 100;",
+          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type!='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_name ORDER by count desc LIMIT 100;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -988,7 +988,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries \nwhere response_type='BLOCKED' and request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \nGROUP BY question_name ORDER by count desc LIMIT 100; ",
+          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_name ORDER by count desc LIMIT 100; ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1087,7 +1087,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries \nwhere request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
+          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1180,7 +1180,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries \nwhere response_type='BLOCKED' and request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
+          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1347,7 +1347,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select * FROM log_entries \nwhere request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \nORDER BY request_ts desc limit 100;",
+          "rawSql": "select * FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n(length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nORDER BY request_ts desc limit 100;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1399,189 +1399,6 @@
         }
       ],
       "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "filterable": true,
-            "inspect": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "request_ts"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 150
-              },
-              {
-                "id": "unit",
-                "value": "dateTimeAsIsoNoDateIfToday"
-              },
-              {
-                "id": "custom.filterable"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "question_type"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 75
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "client_ip"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 130
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "response_type"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "duration_ms"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 75
-              },
-              {
-                "id": "unit",
-                "value": "ms"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 13,
-        "w": 24,
-        "x": 0,
-        "y": 68
-      },
-      "id": 33,
-      "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "9.3.6",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "select * FROM log_entries \nwhere response_type='BLOCKED' AND request_ts >= $__timeFrom() AND request_ts <= $__timeTo() \nORDER BY request_ts desc limit 100;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Recent blocked queries",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "answer": true,
-              "effective_tldp": true,
-              "id": true,
-              "response_code": true,
-              "response_type": false
-            },
-            "indexByName": {
-              "answer": 9,
-              "client_ip": 4,
-              "client_name": 3,
-              "duration_ms": 7,
-              "effective_tldp": 8,
-              "id": 11,
-              "question_name": 2,
-              "question_type": 1,
-              "reason": 6,
-              "request_ts": 0,
-              "response_code": 10,
-              "response_type": 5
-            },
-            "renameByName": {}
-          }
-        }
-      ],
-      "type": "table"
     }
   ],
   "refresh": "1m",
@@ -1589,7 +1406,78 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_BLOCKYDB}"
+        },
+        "definition": "select distinct question_type from log_entries;",
+        "hide": 0,
+        "includeAll": true,
+        "label": "DNS Type",
+        "multi": true,
+        "name": "dns_type",
+        "options": [],
+        "query": "select distinct question_type from log_entries;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_BLOCKYDB}"
+        },
+        "definition": "select distinct client_name from log_entries t\nWHERE $__timeFilter(t.request_Ts) ;",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Client name",
+        "multi": true,
+        "name": "client_name",
+        "options": [],
+        "query": "select distinct client_name from log_entries t\nWHERE $__timeFilter(t.request_Ts) ;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_BLOCKYDB}"
+        },
+        "definition": "select distinct response_type from log_entries;",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Response type",
+        "multi": true,
+        "name": "response_type",
+        "options": [],
+        "query": "select distinct response_type from log_entries;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "hide": 0,
+        "label": "Domain (contains)",
+        "name": "question",
+        "options": [],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
   },
   "time": {
     "from": "now-24h",
@@ -1599,6 +1487,6 @@
   "timezone": "",
   "title": "Blocky-Postgres",
   "uid": "NhdNWqTVk",
-  "version": 21,
+  "version": 26,
   "weekStart": ""
 }
