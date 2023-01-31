@@ -117,8 +117,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -152,7 +152,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
           "fields": "",
           "values": false
@@ -163,40 +163,21 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "select count (*) from log_entries t\r\nWHERE $__timeFilter(t.request_ts) AND \r\n  t.question_type in ($dns_type) AND\r\n  t.client_name in ($client_name) AND \r\n  t.response_type in ($response_type) AND \r\n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\r\n;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "panelId": 14,
+          "refId": "A"
         }
       ],
       "title": "Total Queries",
+      "transformations": [],
       "type": "stat"
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -230,7 +211,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
           "fields": "",
           "values": false
@@ -241,40 +222,40 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "select count (*) from log_entries t\r\nwhere response_type='BLOCKED' AND \r\n  $__timeFilter(t.request_ts) AND \r\n  t.question_type in ($dns_type) AND\r\n  t.client_name in ($client_name) AND \r\n  t.response_type in ($response_type) AND \r\n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\r\n;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "panelId": 14,
+          "refId": "A"
         }
       ],
       "title": "Queries Blocked",
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "equal",
+                  "options": {
+                    "value": "BLOCKED"
+                  }
+                },
+                "fieldName": "response_type"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        }
+      ],
       "type": "stat"
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -291,7 +272,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percentunit"
         },
         "overrides": []
       },
@@ -301,7 +282,8 @@
         "x": 12,
         "y": 1
       },
-      "id": 28,
+      "id": 34,
+      "maxDataPoints": 200,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -309,7 +291,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
           "fields": "",
           "values": false
@@ -320,51 +302,54 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\n    response_type, \n    (100 * num/sum(num) over ()) as perc\nFROM (\n    SELECT response_type, count(response_type) as num\n    FROM log_entries t\n    WHERE $__timeFilter(t.request_ts) AND \n      t.question_type in ($dns_type) AND\n      t.client_name in ($client_name) AND \n      t.response_type in ($response_type) AND \n      (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n    GROUP BY response_type\n    ) log_entries\n",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "panelId": 14,
+          "refId": "A"
         }
       ],
       "title": "Percentage Blocked",
       "transformations": [
         {
-          "id": "filterByValue",
+          "id": "groupBy",
           "options": {
-            "filters": [
-              {
-                "config": {
-                  "id": "equal",
-                  "options": {
-                    "value": "BLOCKED"
-                  }
-                },
-                "fieldName": "response_type"
+            "fields": {
+              "cnt": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              },
+              "response_type": {
+                "aggregations": [],
+                "operation": "groupby"
               }
-            ],
-            "match": "any",
-            "type": "include"
+            }
+          }
+        },
+        {
+          "id": "rowsToFields",
+          "options": {}
+        },
+        {
+          "id": "calculateField",
+          "options": {}
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "binary": {
+              "left": "BLOCKED",
+              "operator": "/",
+              "reducer": "sum",
+              "right": "Total"
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": true
           }
         }
       ],
@@ -424,7 +409,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select count(distinct client_name) FROM log_entries t\r\nWHERE $__timeFilter(t.request_ts) AND \r\n  t.question_type in ($dns_type) AND\r\n  t.client_name in ($client_name) AND \r\n  t.response_type in ($response_type) AND \r\n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\r\n;",
+          "rawSql": "select count(distinct client_name) FROM log_entries t\r\nWHERE $__timeFilter(t.request_ts) AND \r\n  t.question_type in ($dns_types) AND\r\n  t.client_name in ($client_names) AND \r\n  t.response_type in ($response_types) AND \r\n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\r\n;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -489,6 +474,7 @@
               "mode": "off"
             }
           },
+          "displayName": "${__field.labels.response_type}",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -509,6 +495,7 @@
         "y": 4
       },
       "id": 14,
+      "maxDataPoints": 200,
       "options": {
         "legend": {
           "calcs": [],
@@ -530,7 +517,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select \n  $__timeGroupAlias(t.request_Ts, '5m'), \n  response_type, count(*)\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, response_type \norder by time asc;",
+          "rawSql": "select \n  $__timeGroupAlias(t.request_Ts, '$__interval'), \n  t.response_type, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.response_type \norder by time asc;",
           "refId": "response",
           "sql": {
             "columns": [
@@ -602,6 +589,7 @@
               "mode": "off"
             }
           },
+          "displayName": "${__field.labels.client_name}",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -622,6 +610,7 @@
         "y": 12
       },
       "id": 16,
+      "maxDataPoints": 200,
       "options": {
         "legend": {
           "calcs": [],
@@ -643,7 +632,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select \n  $__timeGroupAlias(t.request_Ts, '5m'), \n  client_name, count(*)\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, client_name \norder by time asc;",
+          "rawSql": "select \n  $__timeGroupAlias(t.request_Ts, '$__interval'), \n  t.client_name, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.client_name \norder by cnt desc;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -735,7 +724,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT question_type, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_type ;",
+          "rawSql": "SELECT question_type, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_type ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -818,7 +807,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT reason, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY reason;  ",
+          "rawSql": "SELECT reason, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY reason;  ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -839,7 +828,7 @@
           }
         }
       ],
-      "title": "Upstream servers",
+      "title": "Upstream Servers",
       "type": "piechart"
     },
     {
@@ -863,8 +852,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -903,7 +891,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type!='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_name ORDER by count desc LIMIT 100;",
+          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type!='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_name ORDER by count desc LIMIT 100;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -948,8 +936,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -988,7 +975,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_name ORDER by count desc LIMIT 100; ",
+          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_name ORDER by count desc LIMIT 100; ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1033,8 +1020,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1087,7 +1073,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
+          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1140,8 +1126,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1180,7 +1165,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
+          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1238,8 +1223,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -1347,7 +1331,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select * FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_type) AND\n  t.client_name in ($client_name) AND \n  t.response_type in ($response_type) AND \n(length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nORDER BY request_ts desc limit 100;",
+          "rawSql": "select * FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n(length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nORDER BY request_ts desc limit 100;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1418,7 +1402,7 @@
         "includeAll": true,
         "label": "DNS Type",
         "multi": true,
-        "name": "dns_type",
+        "name": "dns_types",
         "options": [],
         "query": "select distinct question_type from log_entries;",
         "refresh": 1,
@@ -1438,7 +1422,7 @@
         "includeAll": true,
         "label": "Client name",
         "multi": true,
-        "name": "client_name",
+        "name": "client_names",
         "options": [],
         "query": "select distinct client_name from log_entries t\nWHERE $__timeFilter(t.request_Ts) ;",
         "refresh": 2,
@@ -1458,7 +1442,7 @@
         "includeAll": true,
         "label": "Response type",
         "multi": true,
-        "name": "response_type",
+        "name": "response_types",
         "options": [],
         "query": "select distinct response_type from log_entries;",
         "refresh": 1,
@@ -1472,7 +1456,13 @@
         "hide": 0,
         "label": "Domain (contains)",
         "name": "question",
-        "options": [],
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
         "query": "",
         "skipUrlSync": false,
         "type": "textbox"
@@ -1487,6 +1477,6 @@
   "timezone": "",
   "title": "Blocky-Postgres",
   "uid": "NhdNWqTVk",
-  "version": 26,
+  "version": 46,
   "weekStart": ""
 }
