@@ -517,7 +517,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select \n  $__timeGroupAlias(t.request_Ts, '$__interval'), \n  t.response_type, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.response_type \norder by time asc;",
+          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.response_type, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.response_type \norder by time asc;",
           "refId": "response",
           "sql": {
             "columns": [
@@ -632,7 +632,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select \n  $__timeGroupAlias(t.request_Ts, '$__interval'), \n  t.client_name, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.client_name \norder by cnt desc;",
+          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.client_name, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.client_name \norder by cnt desc;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -705,10 +705,10 @@
         "pieType": "donut",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
-          "fields": "/^count$/",
-          "values": true
+          "fields": "",
+          "values": false
         },
         "tooltip": {
           "mode": "single",
@@ -724,7 +724,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT question_type, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_type ;",
+          "rawSql": "SELECT  t.question_type, COUNT(*) as cnt \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY t.question_type \n;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -746,6 +746,23 @@
         }
       ],
       "title": "Query Types",
+      "transformations": [
+        {
+          "id": "rowsToFields",
+          "options": {
+            "mappings": [
+              {
+                "fieldName": "question_type",
+                "handlerKey": "field.name"
+              },
+              {
+                "fieldName": "cnt",
+                "handlerKey": "field.value"
+              }
+            ]
+          }
+        }
+      ],
       "type": "piechart"
     },
     {
@@ -788,10 +805,10 @@
         "pieType": "donut",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
           "fields": "",
-          "values": true
+          "values": false
         },
         "tooltip": {
           "mode": "single",
@@ -807,7 +824,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT reason, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY reason;  ",
+          "rawSql": "SELECT reason, COUNT(*) as cnt\nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY reason\n;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -829,6 +846,23 @@
         }
       ],
       "title": "Responses",
+      "transformations": [
+        {
+          "id": "rowsToFields",
+          "options": {
+            "mappings": [
+              {
+                "fieldName": "reason",
+                "handlerKey": "field.name"
+              },
+              {
+                "fieldName": "cnt",
+                "handlerKey": "field.value"
+              }
+            ]
+          }
+        }
+      ],
       "type": "piechart"
     },
     {
@@ -1554,14 +1588,14 @@
           "type": "postgres",
           "uid": "${DS_BLOCKYDB}"
         },
-        "definition": "select distinct question_type from log_entries;",
+        "definition": "SELECT distinct t.question_type \nFROM log_entries t;",
         "hide": 0,
         "includeAll": true,
         "label": "DNS Type",
         "multi": true,
         "name": "dns_types",
         "options": [],
-        "query": "select distinct question_type from log_entries;",
+        "query": "SELECT distinct t.question_type \nFROM log_entries t;",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1582,14 +1616,14 @@
           "type": "postgres",
           "uid": "${DS_BLOCKYDB}"
         },
-        "definition": "select distinct t.client_name from log_entries t\nWHERE $__timeFilter(t.request_Ts) ;",
+        "definition": "SELECT distinct t.client_name \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) ;",
         "hide": 0,
         "includeAll": true,
         "label": "Client name",
         "multi": true,
         "name": "client_names",
         "options": [],
-        "query": "select distinct t.client_name from log_entries t\nWHERE $__timeFilter(t.request_Ts) ;",
+        "query": "SELECT distinct t.client_name \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) ;",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1610,14 +1644,14 @@
           "type": "postgres",
           "uid": "${DS_BLOCKYDB}"
         },
-        "definition": "select distinct response_type from log_entries;",
+        "definition": "SELECT distinct t.response_type \nFROM log_entries t;",
         "hide": 0,
         "includeAll": true,
         "label": "Response type",
         "multi": true,
         "name": "response_types",
         "options": [],
-        "query": "select distinct response_type from log_entries;",
+        "query": "SELECT distinct t.response_type \nFROM log_entries t;",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1650,6 +1684,6 @@
   "timezone": "",
   "title": "Blocky-Postgres",
   "uid": "NhdNWqTVk",
-  "version": 2,
+  "version": 5,
   "weekStart": ""
 }
