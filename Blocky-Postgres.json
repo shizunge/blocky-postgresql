@@ -357,8 +357,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -384,7 +384,7 @@
         "x": 18,
         "y": 1
       },
-      "id": 20,
+      "id": 35,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -392,9 +392,9 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
-          "fields": "",
+          "fields": "/^client_name$/",
           "values": false
         },
         "textMode": "auto"
@@ -403,34 +403,26 @@
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "select count(distinct client_name) FROM log_entries t\r\nWHERE $__timeFilter(t.request_ts) AND \r\n  t.question_type in ($dns_types) AND\r\n  t.client_name in ($client_names) AND \r\n  t.response_type in ($response_types) AND \r\n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\r\n;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "panelId": 16,
+          "refId": "A"
         }
       ],
       "title": "Active Clients",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "mode": "reduceFields",
+            "reducers": [
+              "distinctCount"
+            ]
+          }
+        }
+      ],
       "type": "stat"
     },
     {
@@ -1684,6 +1676,6 @@
   "timezone": "",
   "title": "Blocky-Postgres",
   "uid": "NhdNWqTVk",
-  "version": 5,
+  "version": 8,
   "weekStart": ""
 }
