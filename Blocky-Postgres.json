@@ -370,7 +370,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -479,7 +480,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -593,7 +595,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -850,7 +853,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -879,6 +883,7 @@
       "id": 8,
       "options": {
         "footer": {
+          "enablePagination": true,
           "fields": "",
           "reducer": [
             "sum"
@@ -956,7 +961,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -985,6 +991,7 @@
       "id": 6,
       "options": {
         "footer": {
+          "enablePagination": true,
           "fields": "",
           "reducer": [
             "sum"
@@ -1062,7 +1069,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -1090,6 +1098,14 @@
       },
       "id": 2,
       "options": {
+        "footer": {
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
       "pluginVersion": "9.3.6",
@@ -1198,7 +1214,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -1226,6 +1243,14 @@
       },
       "id": 4,
       "options": {
+        "footer": {
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
       "pluginVersion": "9.3.6",
@@ -1338,7 +1363,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -1425,6 +1451,14 @@
       },
       "id": 32,
       "options": {
+        "footer": {
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
       "pluginVersion": "9.3.6",
@@ -1508,14 +1542,14 @@
     "list": [
       {
         "current": {
-		  "selected": true,
+          "selected": true,
           "text": [
             "All"
           ],
           "value": [
             "$__all"
           ]
-		},
+        },
         "datasource": {
           "type": "postgres",
           "uid": "${DS_BLOCKYDB}"
@@ -1536,14 +1570,14 @@
       },
       {
         "current": {
-		  "selected": true,
+          "selected": true,
           "text": [
             "All"
           ],
           "value": [
             "$__all"
           ]
-		},
+        },
         "datasource": {
           "type": "postgres",
           "uid": "${DS_BLOCKYDB}"
@@ -1564,14 +1598,14 @@
       },
       {
         "current": {
-		  "selected": true,
+          "selected": true,
           "text": [
             "All"
           ],
           "value": [
             "$__all"
           ]
-		},
+        },
         "datasource": {
           "type": "postgres",
           "uid": "${DS_BLOCKYDB}"
