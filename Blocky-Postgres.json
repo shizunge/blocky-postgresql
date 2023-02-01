@@ -370,8 +370,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -480,8 +479,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -595,8 +593,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -828,7 +825,7 @@
           }
         }
       ],
-      "title": "Upstream Servers",
+      "title": "Responses",
       "type": "piechart"
     },
     {
@@ -845,7 +842,8 @@
             "align": "auto",
             "displayMode": "auto",
             "filterable": true,
-            "inspect": false
+            "inspect": false,
+            "minWidth": 50
           },
           "mappings": [],
           "thresholds": {
@@ -853,15 +851,24 @@
             "steps": [
               {
                 "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byType",
+              "options": "number"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 13,
@@ -872,7 +879,6 @@
       "id": 8,
       "options": {
         "footer": {
-          "enablePagination": true,
           "fields": "",
           "reducer": [
             "sum"
@@ -913,6 +919,19 @@
         }
       ],
       "title": "Top Permitted Domains",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "count": "Hits",
+              "question_name": "Domain"
+            }
+          }
+        }
+      ],
       "type": "table"
     },
     {
@@ -929,7 +948,8 @@
             "align": "auto",
             "displayMode": "auto",
             "filterable": true,
-            "inspect": false
+            "inspect": false,
+            "minWidth": 50
           },
           "mappings": [],
           "thresholds": {
@@ -937,15 +957,24 @@
             "steps": [
               {
                 "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byType",
+              "options": "number"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 13,
@@ -956,7 +985,6 @@
       "id": 6,
       "options": {
         "footer": {
-          "enablePagination": true,
           "fields": "",
           "reducer": [
             "sum"
@@ -997,6 +1025,19 @@
         }
       ],
       "title": "Top Blocked Domains",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "count": "Hits",
+              "question_name": "Domain"
+            }
+          }
+        }
+      ],
       "type": "table"
     },
     {
@@ -1013,7 +1054,8 @@
             "align": "auto",
             "displayMode": "auto",
             "filterable": true,
-            "inspect": false
+            "inspect": false,
+            "minWidth": 50
           },
           "mappings": [],
           "thresholds": {
@@ -1021,10 +1063,6 @@
             "steps": [
               {
                 "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -1032,13 +1070,13 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "client_name"
+              "id": "byType",
+              "options": "number"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 318
+                "value": 150
               }
             ]
           }
@@ -1052,16 +1090,7 @@
       },
       "id": 2,
       "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
+        "showHeader": true
       },
       "pluginVersion": "9.3.6",
       "targets": [
@@ -1073,7 +1102,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
+          "rawSql": "SELECT t.client_name, t.client_ip, COUNT(*) as cnt \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY t.client_name, t.client_ip\nORDER by cnt desc \nLIMIT 100;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1103,6 +1132,48 @@
         }
       ],
       "title": "Top Clients (Total)",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "client_ip": {
+                "aggregations": [
+                  "allValues"
+                ],
+                "operation": "aggregate"
+              },
+              "client_name": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "cnt": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "client_ip": true,
+              "client_ip (allValues)": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "client_ip (allValues)": "Client IP",
+              "client_name": "Client",
+              "cnt": "Requests",
+              "cnt (sum)": "Requests",
+              "count": "Requests"
+            }
+          }
+        }
+      ],
       "type": "table"
     },
     {
@@ -1119,7 +1190,8 @@
             "align": "auto",
             "displayMode": "auto",
             "filterable": true,
-            "inspect": false
+            "inspect": false,
+            "minWidth": 50
           },
           "mappings": [],
           "thresholds": {
@@ -1127,15 +1199,24 @@
             "steps": [
               {
                 "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byType",
+              "options": "number"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 13,
@@ -1145,14 +1226,6 @@
       },
       "id": 4,
       "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
         "showHeader": true
       },
       "pluginVersion": "9.3.6",
@@ -1165,7 +1238,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT client_name, COUNT(*) FROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY client_name ORDER by count desc LIMIT 100 ;",
+          "rawSql": "SELECT t.client_name, t.client_ip, COUNT(*) as cnt\nFROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY t.client_name, t.client_ip \nORDER by cnt desc \nLIMIT 100 ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1187,6 +1260,48 @@
         }
       ],
       "title": "Top Clients (Blocked only)",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "client_ip": {
+                "aggregations": [
+                  "allValues"
+                ],
+                "operation": "aggregate"
+              },
+              "client_name": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "cnt": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "client_ip": true,
+              "client_ip (allValues)": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "client_ip (allValues)": "Client IP",
+              "client_name": "Client",
+              "cnt": "Requests",
+              "cnt (sum)": "Requests",
+              "count": "Requests"
+            }
+          }
+        }
+      ],
       "type": "table"
     },
     {
@@ -1232,7 +1347,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "request_ts"
+              "options": "Time"
             },
             "properties": [
               {
@@ -1251,7 +1366,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "question_type"
+              "options": "Type"
             },
             "properties": [
               {
@@ -1263,7 +1378,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "client_ip"
+              "options": "Client IP"
             },
             "properties": [
               {
@@ -1275,7 +1390,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "response_type"
+              "options": "Status"
             },
             "properties": [
               {
@@ -1287,7 +1402,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "duration_ms"
+              "options": "Duration"
             },
             "properties": [
               {
@@ -1310,16 +1425,7 @@
       },
       "id": 32,
       "options": {
-        "footer": {
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": []
+        "showHeader": true
       },
       "pluginVersion": "9.3.6",
       "targets": [
@@ -1362,7 +1468,7 @@
               "effective_tldp": true,
               "id": true,
               "response_code": true,
-              "response_type": false
+              "response_type": true
             },
             "indexByName": {
               "answer": 9,
@@ -1378,7 +1484,16 @@
               "response_code": 10,
               "response_type": 5
             },
-            "renameByName": {}
+            "renameByName": {
+              "client_ip": "Client IP",
+              "client_name": "Client",
+              "duration_ms": "Duration",
+              "question_name": "Domain",
+              "question_type": "Type",
+              "reason": "Response",
+              "request_ts": "Time",
+              "response_type": "Status"
+            }
           }
         }
       ],
@@ -1392,7 +1507,15 @@
   "templating": {
     "list": [
       {
-        "current": {},
+        "current": {
+		  "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+		},
         "datasource": {
           "type": "postgres",
           "uid": "${DS_BLOCKYDB}"
@@ -1412,19 +1535,27 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+		  "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+		},
         "datasource": {
           "type": "postgres",
           "uid": "${DS_BLOCKYDB}"
         },
-        "definition": "select distinct client_name from log_entries t\nWHERE $__timeFilter(t.request_Ts) ;",
+        "definition": "select distinct t.client_name from log_entries t\nWHERE $__timeFilter(t.request_Ts) ;",
         "hide": 0,
         "includeAll": true,
         "label": "Client name",
         "multi": true,
         "name": "client_names",
         "options": [],
-        "query": "select distinct client_name from log_entries t\nWHERE $__timeFilter(t.request_Ts) ;",
+        "query": "select distinct t.client_name from log_entries t\nWHERE $__timeFilter(t.request_Ts) ;",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1432,7 +1563,15 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+		  "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+		},
         "datasource": {
           "type": "postgres",
           "uid": "${DS_BLOCKYDB}"
@@ -1477,6 +1616,6 @@
   "timezone": "",
   "title": "Blocky-Postgres",
   "uid": "NhdNWqTVk",
-  "version": 46,
+  "version": 2,
   "weekStart": ""
 }
