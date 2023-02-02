@@ -334,16 +334,52 @@
         },
         {
           "id": "calculateField",
-          "options": {}
+          "options": {
+            "alias": "BLOCKED_TOTAL",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "BLOCKED"
+              ],
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Sum",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "sum"
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "REAL_TOTAL",
+            "binary": {
+              "left": "Sum",
+              "operator": "-",
+              "reducer": "sum",
+              "right": "BLOCKED_TOTAL"
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            }
+          }
         },
         {
           "id": "calculateField",
           "options": {
             "binary": {
-              "left": "BLOCKED",
+              "left": "BLOCKED_TOTAL",
               "operator": "/",
               "reducer": "sum",
-              "right": "Total"
+              "right": "REAL_TOTAL"
             },
             "mode": "binary",
             "reduce": {
@@ -1676,6 +1712,6 @@
   "timezone": "",
   "title": "Blocky-Postgres",
   "uid": "NhdNWqTVk",
-  "version": 8,
+  "version": 10,
   "weekStart": ""
 }
