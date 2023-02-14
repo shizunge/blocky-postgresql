@@ -70,8 +70,10 @@
       }
     ]
   },
+  "description": "Grafana dashboard for Blocky with PostgreSQL query logging",
   "editable": true,
   "fiscalYearStartMonth": 0,
+  "gnetId": 17996,
   "graphTooltip": 0,
   "id": null,
   "links": [
@@ -154,7 +156,7 @@
           "calcs": [
             "sum"
           ],
-          "fields": "",
+          "fields": "/^cnt$/",
           "values": false
         },
         "textMode": "auto"
@@ -213,7 +215,7 @@
           "calcs": [
             "sum"
           ],
-          "fields": "",
+          "fields": "/^cnt$/",
           "values": false
         },
         "textMode": "auto"
@@ -1712,6 +1714,6 @@
   "timezone": "",
   "title": "Blocky-Postgres",
   "uid": "NhdNWqTVk",
-  "version": 10,
+  "version": 2,
   "weekStart": ""
 }
