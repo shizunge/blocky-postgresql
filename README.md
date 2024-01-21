@@ -1,17 +1,10 @@
-# blocky-postgresql-dashboard
+# Blocky postgresql tool kits
 
-This is a Grafana dashboard for [Blocky](https://0xerr0r.github.io/blocky/) with PostgreSQL query logging. It displays top clients, top domains, recent queries and more.
+## [Dashboard](dashboard)
 
-To use this dashboard, set Blocky's [query log type](https://0xerr0r.github.io/blocky/configuration/#query-log-types) to PostgreSQL , and setup corresponding PostgreSQL database as data source.
+A Grafana dashboard for [Blocky](https://0xerr0r.github.io/blocky/) with PostgreSQL query logging. Grafana.com ID is [17996](https://grafana.com/grafana/dashboards/17996).
 
-You can import the dashboard from Grafana.com using ID [17996](https://grafana.com/grafana/dashboards/17996)
+![screenshot0](https://raw.githubusercontent.com/shizunge/blocky-postgresql/main/dashboard/screenshots/screenshot0.png)
 
-## Screenshots
-Screenshot0
-![screenshot0](https://raw.githubusercontent.com/shizunge/blocky-postgresql-dashboard/main/screenshots/screenshot0.png)
+See the [Dashboard](dashboard) folder for more information and screenshots.
 
-Screenshot1
-![screenshot1](https://raw.githubusercontent.com/shizunge/blocky-postgresql-dashboard/main/screenshots/screenshot1.png)
-
-Screenshot2
-![screenshot2](https://raw.githubusercontent.com/shizunge/blocky-postgresql-dashboard/main/screenshots/screenshot2.png)
