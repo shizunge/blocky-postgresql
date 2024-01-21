@@ -1,0 +1,98 @@
+# Copyright (C) 2024 Shizun Ge
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+# This is an example how to use the postgresql initial script in a docker-compose file. For more information about docker-compose, please visit https://docs.docker.com/compose/ and https://docs.docker.com/compose/compose-file/compose-file-v3/
+# Secrets and configs are docker swarm features. If you are not using docker swarm, you can just mount the file to the container.
+#
+# The script works with the Docker offical postgresql image. For more information about that image, see https://hub.docker.com/_/postgres and https://github.com/docker-library/docs/blob/master/postgres/README.md
+#
+# As mentioned in the document https://github.com/docker-library/docs/blob/master/postgres/README.md#initialization-scripts, the scripts are only run if you start the container with a data directory that is empty.
+#
+# The postgres inside the container does not care the UID, but the initdb does care.
+# The script must be readable by UID 999, which is the UID used by initdb inside the container.
+# See https://github.com/docker-library/docs/blob/master/postgres/README.md#arbitrary---user-notes
+#
+
+version: '3.8'
+
+services:
+  blocky_db:
+    image: postgres:16
+    networks:
+      - blocky
+    environment:
+      - "POSTGRES_USER=blocky"
+      - "POSTGRES_PASSWORD=blocky"
+      - "POSTGRES_DB=blocky"
+      # Used by the init script.
+      - "READER_USERNAME=blocky_reader"
+      - "READER_PASSWORD_FILE=/reader_password"
+      - "REVERSE_PROXIES=.${SWARM_OVERLAY_NETWORK}"
+    secrets:
+      - source: blocky-db-reader-password
+        target: /reader_password
+        # The user id of 'postgres' inside the container is 999.
+        uid: '999'
+        gid: '999'
+        mode: 0400
+    configs:
+      - source: blocky-db-init-sh
+        target: /docker-entrypoint-initdb.d/blocky-db-init.sh
+        # The user id of 'postgres' inside the container is 999.
+        uid: '999'
+        gid: '999'
+        mode: 0500
+    volumes:
+      - blocky-db-16:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
+
+  blocky_app:
+    image: ghcr.io/0xerr0r/blocky
+    cap_add:
+      - NET_BIND_SERVICE
+    networks:
+      - blocky
+    configs:
+      - source: blocky-config
+        target: /app/config.yml
+        mode: 0400
+    deploy:
+      replicas: 1
+
+secrets:
+  blocky-db-reader-password:
+    name: ${STACK}-blocky-db-reader-password-${TIMESTAMP}
+    file: ${VOLUME_SECRET_PATH}/dns-blocky-db-reader-password
+
+configs:
+  blocky-config:
+    name: ${STACK}-blocky-config-${TIMESTAMP}
+    file: ${VOLUME_CONFIG_PATH}/dns-blocky-config.yml
+  blocky-db-init-sh:
+    name: ${STACK}-blocky-db-init-sh-${TIMESTAMP}
+    file: ${VOLUME_CONFIG_PATH}/dns-blocky-db-init.sh
+
+volumes:
+  blocky-db-16:
+
+networks:
+  blocky:
+    internal: true
+    driver: overlay
+    attachable: false
+    name: blocky_network
+

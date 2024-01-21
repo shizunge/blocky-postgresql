@@ -8,3 +8,6 @@ A Grafana dashboard for [Blocky](https://0xerr0r.github.io/blocky/) with Postgre
 
 See the [Dashboard](dashboard) folder for more information and screenshots.
 
+## [Initialization scripts](init-scripts)
+
+An initialization script for [Docker offical postgresql image](https://hub.docker.com/_/postgres) to avoid malicious SQL statements and unauthorized access.
