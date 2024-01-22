@@ -48,7 +48,7 @@ HBA=/var/lib/postgresql/data/pg_hba.conf
 # Remove the default access control.
 sed -i "s/^host[[:space:]]\+all[[:space:]]\+all[[:space:]]\+all/# host all all all/g" ${HBA}
 # Each row: connection database user address auth-method
-# Do not allow connections for the POSTGRES_USER from the reverse procy i.e. from the internet.
+# Do not allow connections for the POSTGRES_USER from the reverse proxy i.e. from the internet.
 for REVERSE_PROXY in ${REVERSE_PROXIES}; do
   echo "host all ${POSTGRES_USER} ${REVERSE_PROXY} reject" >> ${HBA}
   # The reverse proxy should be also within the private network. Thus this may be redundant.

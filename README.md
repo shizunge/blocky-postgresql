@@ -17,3 +17,8 @@ See the [Dashboard](dashboard) folder for more information and screenshots.
 ## [Initialization scripts](init-scripts)
 
 An initialization script for [Docker offical postgresql image](https://hub.docker.com/_/postgres) to avoid malicious SQL statements and unauthorized access.
+
+## Related projects
+
+You may also like my [blocky lists updater](https://github.com/shizunge/blocky-lists-updater).
+
