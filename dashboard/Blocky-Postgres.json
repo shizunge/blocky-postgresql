@@ -1,11 +1,11 @@
 {
   "__inputs": [
     {
-      "name": "DS_BLOCKYDB",
-      "label": "BlockyDB",
+      "name": "DS_BLOCKY-POSTGRESQL",
+      "label": "blocky-postgresql",
       "description": "",
       "type": "datasource",
-      "pluginId": "postgres",
+      "pluginId": "grafana-postgresql-datasource",
       "pluginName": "PostgreSQL"
     }
   ],
@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.3.6"
+      "version": "11.5.0-80683"
     },
     {
       "type": "panel",
@@ -25,7 +25,7 @@
     },
     {
       "type": "datasource",
-      "id": "postgres",
+      "id": "grafana-postgresql-datasource",
       "name": "PostgreSQL",
       "version": "1.0.0"
     },
@@ -73,7 +73,6 @@
   "description": "Grafana dashboard for Blocky with PostgreSQL query logging",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": 17996,
   "graphTooltip": 0,
   "id": null,
   "links": [
@@ -102,7 +101,6 @@
       "url": "https://grafana.com/grafana/dashboards/17996"
     }
   ],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
@@ -119,8 +117,8 @@
     },
     {
       "datasource": {
-        "type": "datasource",
-        "uid": "-- Dashboard --"
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_BLOCKY-POSTGRESQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -152,6 +150,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "sum"
@@ -159,21 +158,42 @@
           "fields": "/^cnt$/",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "datasource",
-            "uid": "-- Dashboard --"
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_BLOCKY-POSTGRESQL}"
           },
-          "panelId": 14,
-          "refId": "A"
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.response_type, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.response_type \norder by time asc;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Total Queries",
-      "transformations": [],
       "type": "stat"
     },
     {
@@ -211,6 +231,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "sum"
@@ -218,16 +239,18 @@
           "fields": "/^cnt$/",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
             "type": "datasource",
             "uid": "-- Dashboard --"
           },
-          "panelId": 14,
+          "panelId": 18,
           "refId": "A"
         }
       ],
@@ -291,6 +314,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "sum"
@@ -298,16 +322,18 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
             "type": "datasource",
             "uid": "-- Dashboard --"
           },
-          "panelId": 14,
+          "panelId": 18,
           "refId": "A"
         }
       ],
@@ -395,8 +421,8 @@
     },
     {
       "datasource": {
-        "type": "datasource",
-        "uid": "-- Dashboard --"
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_BLOCKY-POSTGRESQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -428,6 +454,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "sum"
@@ -435,17 +462,39 @@
           "fields": "/^client_name$/",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "datasource",
-            "uid": "-- Dashboard --"
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_BLOCKY-POSTGRESQL}"
           },
-          "panelId": 16,
-          "refId": "A"
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.client_name, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.client_name \norder by cnt desc;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Active Clients",
@@ -465,8 +514,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "description": "",
       "fieldConfig": {
@@ -475,11 +524,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 1,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -488,6 +539,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -524,7 +576,7 @@
         "x": 0,
         "y": 4
       },
-      "id": 14,
+      "id": 36,
       "maxDataPoints": 200,
       "options": {
         "legend": {
@@ -538,42 +590,23 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.response_type, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.response_type \norder by time asc;",
-          "refId": "response",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "panelId": 18,
+          "refId": "A"
         }
       ],
-      "title": "Total Queries",
+      "title": "Queries by response type",
       "transformations": [
         {
           "id": "prepareTimeSeries",
           "options": {
-            "format": "many"
+            "format": "multi"
           }
         }
       ],
@@ -581,8 +614,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -590,11 +623,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 1,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -603,6 +638,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -653,34 +689,15 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.client_name, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.client_name \norder by cnt desc;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "panelId": 35,
+          "refId": "A"
         }
       ],
       "title": "Client Actvity",
@@ -696,8 +713,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_BLOCKY-POSTGRESQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -729,7 +746,8 @@
           "placement": "right",
           "showLegend": true,
           "values": [
-            "percent"
+            "percent",
+            "value"
           ]
         },
         "pieType": "donut",
@@ -745,11 +763,12 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_BLOCKY-POSTGRESQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -797,8 +816,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_BLOCKY-POSTGRESQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -812,6 +831,7 @@
               "viz": false
             }
           },
+          "fieldMinMax": false,
           "mappings": []
         },
         "overrides": []
@@ -829,7 +849,8 @@
           "placement": "right",
           "showLegend": true,
           "values": [
-            "percent"
+            "percent",
+            "value"
           ]
         },
         "pieType": "donut",
@@ -845,11 +866,12 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_BLOCKY-POSTGRESQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -897,8 +919,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_BLOCKY-POSTGRESQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -907,7 +929,9 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
             "filterable": true,
             "inspect": false,
             "minWidth": 50
@@ -939,14 +963,16 @@
         ]
       },
       "gridPos": {
-        "h": 13,
+        "h": 14,
         "w": 12,
         "x": 0,
         "y": 28
       },
       "id": 8,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "enablePagination": true,
           "fields": "",
           "reducer": [
@@ -956,12 +982,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_BLOCKY-POSTGRESQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1005,8 +1031,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_BLOCKY-POSTGRESQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1015,7 +1041,9 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
             "filterable": true,
             "inspect": false,
             "minWidth": 50
@@ -1047,14 +1075,16 @@
         ]
       },
       "gridPos": {
-        "h": 13,
+        "h": 14,
         "w": 12,
         "x": 12,
         "y": 28
       },
       "id": 6,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "enablePagination": true,
           "fields": "",
           "reducer": [
@@ -1064,12 +1094,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_BLOCKY-POSTGRESQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1113,8 +1143,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_BLOCKY-POSTGRESQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1123,7 +1153,9 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
             "filterable": true,
             "inspect": false,
             "minWidth": 50
@@ -1155,14 +1187,16 @@
         ]
       },
       "gridPos": {
-        "h": 13,
+        "h": 14,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 42
       },
       "id": 2,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "enablePagination": true,
           "fields": "",
           "reducer": [
@@ -1172,12 +1206,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_BLOCKY-POSTGRESQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1258,8 +1292,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_BLOCKY-POSTGRESQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1268,7 +1302,9 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
             "filterable": true,
             "inspect": false,
             "minWidth": 50
@@ -1300,14 +1336,16 @@
         ]
       },
       "gridPos": {
-        "h": 13,
+        "h": 14,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 42
       },
       "id": 4,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "enablePagination": true,
           "fields": "",
           "reducer": [
@@ -1317,12 +1355,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_BLOCKY-POSTGRESQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1399,7 +1437,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 54
+        "y": 56
       },
       "id": 30,
       "panels": [],
@@ -1408,8 +1446,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
-        "uid": "${DS_BLOCKYDB}"
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_BLOCKY-POSTGRESQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1418,7 +1456,9 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
             "filterable": true,
             "inspect": false
           },
@@ -1508,14 +1548,16 @@
         ]
       },
       "gridPos": {
-        "h": 13,
+        "h": 14,
         "w": 24,
         "x": 0,
-        "y": 55
+        "y": 57
       },
       "id": 32,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "enablePagination": true,
           "fields": "",
           "reducer": [
@@ -1525,17 +1567,17 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.5.0-80683",
       "targets": [
         {
           "datasource": {
-            "type": "postgres",
-            "uid": "${DS_BLOCKYDB}"
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_BLOCKY-POSTGRESQL}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select * FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n(length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nORDER BY request_ts desc limit 100;",
+          "rawSql": "select * FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n(length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nORDER BY request_ts desc limit $query_limit;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1599,27 +1641,17 @@
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 37,
-  "style": "dark",
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
-          "type": "postgres",
-          "uid": "${DS_BLOCKYDB}"
+          "type": "grafana-postgresql-datasource",
+          "uid": "${DS_BLOCKY-POSTGRESQL}"
         },
         "definition": "SELECT distinct t.question_type \nFROM log_entries t;",
-        "hide": 0,
         "includeAll": true,
         "label": "DNS Type",
         "multi": true,
@@ -1628,26 +1660,15 @@
         "query": "SELECT distinct t.question_type \nFROM log_entries t;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
-          "type": "postgres",
-          "uid": "${DS_BLOCKYDB}"
+          "type": "grafana-postgresql-datasource",
+          "uid": "${DS_BLOCKY-POSTGRESQL}"
         },
         "definition": "SELECT distinct t.client_name \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) ;",
-        "hide": 0,
         "includeAll": true,
         "label": "Client name",
         "multi": true,
@@ -1656,26 +1677,16 @@
         "query": "SELECT distinct t.client_name \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) ;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
-          "type": "postgres",
-          "uid": "${DS_BLOCKYDB}"
+          "type": "grafana-postgresql-datasource",
+          "uid": "${DS_BLOCKY-POSTGRESQL}"
         },
         "definition": "SELECT distinct t.response_type \nFROM log_entries t;",
-        "hide": 0,
         "includeAll": true,
         "label": "Response type",
         "multi": true,
@@ -1684,13 +1695,14 @@
         "query": "SELECT distinct t.response_type \nFROM log_entries t;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
-        "current": {},
-        "hide": 0,
+        "current": {
+          "text": "",
+          "value": ""
+        },
         "label": "Domain (contains)",
         "name": "question",
         "options": [
@@ -1701,8 +1713,39 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
+      },
+      {
+        "current": {
+          "text": "100",
+          "value": "100"
+        },
+        "label": "Query Limit",
+        "name": "query_limit",
+        "options": [
+          {
+            "selected": true,
+            "text": "100",
+            "value": "100"
+          },
+          {
+            "selected": false,
+            "text": "200",
+            "value": "200"
+          },
+          {
+            "selected": false,
+            "text": "500",
+            "value": "500"
+          },
+          {
+            "selected": false,
+            "text": "1000",
+            "value": "1000"
+          }
+        ],
+        "query": "100,200,500,1000",
+        "type": "custom"
       }
     ]
   },
@@ -1714,6 +1757,6 @@
   "timezone": "",
   "title": "Blocky-Postgres",
   "uid": "NhdNWqTVk",
-  "version": 2,
+  "version": 12,
   "weekStart": ""
 }
