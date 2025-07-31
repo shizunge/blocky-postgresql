@@ -1,5 +1,7 @@
 # Blocky postgresql tool kits
 
+[![License](https://img.shields.io/badge/License-GPLv3-blue)](https://github.com/shizunge/blocky-postgresql/blob/main/LICENSE)
+
 A set of tool kits for [*Blocky*](https://0xerr0r.github.io/blocky/)'s *PostgreSQL* query logging, including a *Grafana* dashboard.
 
 ## [Dashboard](dashboard)
