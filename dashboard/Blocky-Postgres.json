@@ -15,19 +15,19 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.5.0-80683"
+      "version": "12.3.0-18356121373.patch15"
+    },
+    {
+      "type": "datasource",
+      "id": "grafana-postgresql-datasource",
+      "name": "PostgreSQL",
+      "version": "12.3.0-18356121373.patch15"
     },
     {
       "type": "panel",
       "id": "piechart",
       "name": "Pie chart",
       "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "grafana-postgresql-datasource",
-      "name": "PostgreSQL",
-      "version": "1.0.0"
     },
     {
       "type": "panel",
@@ -74,7 +74,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
   "links": [
     {
       "asDropdown": false,
@@ -86,7 +85,7 @@
       "title": "GitHub",
       "tooltip": "",
       "type": "link",
-      "url": "https://github.com/shizunge/blocky-postgresql"
+      "url": "https://github.com/shizunge/blocky-postgresql-dashboard"
     },
     {
       "asDropdown": false,
@@ -131,7 +130,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -162,7 +161,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -212,7 +211,7 @@
             "steps": [
               {
                 "color": "red",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -243,7 +242,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -293,7 +292,7 @@
             "steps": [
               {
                 "color": "yellow",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -326,7 +325,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -435,7 +434,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -466,7 +465,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -547,6 +546,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -563,7 +563,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -586,11 +586,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -646,6 +647,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -662,7 +664,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -685,11 +687,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -758,12 +761,14 @@
           "fields": "",
           "values": false
         },
+        "sort": "desc",
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -861,12 +866,14 @@
           "fields": "",
           "values": false
         },
+        "sort": "desc",
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -933,6 +940,9 @@
               "type": "auto"
             },
             "filterable": true,
+            "footer": {
+              "reducers": []
+            },
             "inspect": false,
             "minWidth": 50
           },
@@ -942,7 +952,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -971,18 +981,10 @@
       "id": 8,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "enablePagination": true,
         "showHeader": true
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -1045,6 +1047,9 @@
               "type": "auto"
             },
             "filterable": true,
+            "footer": {
+              "reducers": []
+            },
             "inspect": false,
             "minWidth": 50
           },
@@ -1054,7 +1059,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1083,18 +1088,10 @@
       "id": 6,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "enablePagination": true,
         "showHeader": true
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -1157,6 +1154,9 @@
               "type": "auto"
             },
             "filterable": true,
+            "footer": {
+              "reducers": []
+            },
             "inspect": false,
             "minWidth": 50
           },
@@ -1166,7 +1166,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1195,18 +1195,10 @@
       "id": 2,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "enablePagination": true,
         "showHeader": true
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -1306,6 +1298,9 @@
               "type": "auto"
             },
             "filterable": true,
+            "footer": {
+              "reducers": []
+            },
             "inspect": false,
             "minWidth": 50
           },
@@ -1315,7 +1310,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1344,18 +1339,10 @@
       "id": 4,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "enablePagination": true,
         "showHeader": true
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -1460,6 +1447,9 @@
               "type": "auto"
             },
             "filterable": true,
+            "footer": {
+              "reducers": []
+            },
             "inspect": false
           },
           "mappings": [],
@@ -1468,7 +1458,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1556,18 +1546,10 @@
       "id": 32,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "enablePagination": true,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "enablePagination": true,
         "showHeader": true
       },
-      "pluginVersion": "11.5.0-80683",
+      "pluginVersion": "12.3.0-18356121373.patch15",
       "targets": [
         {
           "datasource": {
@@ -1604,12 +1586,14 @@
           "id": "organize",
           "options": {
             "excludeByName": {
-              "answer": true,
+              "answer": false,
               "effective_tldp": true,
+              "hostname": false,
               "id": true,
               "response_code": true,
               "response_type": true
             },
+            "includeByName": {},
             "indexByName": {
               "answer": 9,
               "client_ip": 4,
@@ -1625,6 +1609,7 @@
               "response_type": 5
             },
             "renameByName": {
+              "answer": "Answer",
               "client_ip": "Client IP",
               "client_name": "Client",
               "duration_ms": "Duration",
@@ -1641,7 +1626,7 @@
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 40,
+  "schemaVersion": 42,
   "tags": [],
   "templating": {
     "list": [
@@ -1651,14 +1636,14 @@
           "type": "grafana-postgresql-datasource",
           "uid": "${DS_BLOCKY-POSTGRESQL}"
         },
-        "definition": "SELECT distinct t.question_type \nFROM log_entries t;",
+        "definition": "SELECT distinct t.question_type \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) ;",
         "includeAll": true,
         "label": "DNS Type",
         "multi": true,
         "name": "dns_types",
         "options": [],
-        "query": "SELECT distinct t.question_type \nFROM log_entries t;",
-        "refresh": 1,
+        "query": "SELECT distinct t.question_type \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) ;",
+        "refresh": 2,
         "regex": "",
         "type": "query"
       },
@@ -1686,14 +1671,14 @@
           "type": "grafana-postgresql-datasource",
           "uid": "${DS_BLOCKY-POSTGRESQL}"
         },
-        "definition": "SELECT distinct t.response_type \nFROM log_entries t;",
+        "definition": "SELECT distinct t.response_type \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) ;",
         "includeAll": true,
         "label": "Response type",
         "multi": true,
         "name": "response_types",
         "options": [],
-        "query": "SELECT distinct t.response_type \nFROM log_entries t;",
-        "refresh": 1,
+        "query": "SELECT distinct t.response_type \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) ;",
+        "refresh": 2,
         "regex": "",
         "sort": 1,
         "type": "query"
@@ -1757,6 +1742,7 @@
   "timezone": "",
   "title": "Blocky-Postgres",
   "uid": "NhdNWqTVk",
-  "version": 12,
-  "weekStart": ""
+  "version": 14,
+  "weekStart": "",
+  "id": null
 }
