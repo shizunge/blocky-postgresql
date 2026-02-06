@@ -171,7 +171,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.response_type, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.response_type \norder by time asc;",
+          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.response_type, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n  AND (length('$domain_exclude') = 0 or POSITION(lower('$domain_exclude') IN t.question_name) = 0)\ngroup by time, t.response_type \norder by time asc;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -475,7 +475,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.client_name, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\ngroup by time, t.client_name \norder by cnt desc;",
+          "rawSql": "select \n  $__timeGroupAlias(t.request_ts, '$__interval'), \n  t.client_name, count(*) as cnt\nfrom log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n  AND (length('$domain_exclude') = 0 or POSITION(lower('$domain_exclude') IN t.question_name) = 0)\ngroup by time, t.client_name \norder by cnt desc;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -778,7 +778,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT  t.question_type, COUNT(*) as cnt \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY t.question_type \n;",
+          "rawSql": "SELECT  t.question_type, COUNT(*) as cnt \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n  AND (length('$domain_exclude') = 0 or POSITION(lower('$domain_exclude') IN t.question_name) = 0)\nGROUP BY t.question_type \n;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -883,7 +883,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT reason, COUNT(*) as cnt\nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY reason\n;",
+          "rawSql": "SELECT reason, COUNT(*) as cnt\nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n  AND (length('$domain_exclude') = 0 or POSITION(lower('$domain_exclude') IN t.question_name) = 0)\nGROUP BY reason\n;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -994,7 +994,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type!='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_name ORDER by count desc LIMIT 100;",
+          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type!='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n  AND (length('$domain_exclude') = 0 or POSITION(lower('$domain_exclude') IN t.question_name) = 0)\nGROUP BY question_name ORDER by count desc LIMIT 100;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1101,7 +1101,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY question_name ORDER by count desc LIMIT 100; ",
+          "rawSql": "SELECT question_name, COUNT(*) FROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n  AND (length('$domain_exclude') = 0 or POSITION(lower('$domain_exclude') IN t.question_name) = 0)\nGROUP BY question_name ORDER by count desc LIMIT 100; ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1208,7 +1208,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT t.client_name, t.client_ip, COUNT(*) as cnt \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY t.client_name, t.client_ip\nORDER by cnt desc \nLIMIT 100;",
+          "rawSql": "SELECT t.client_name, t.client_ip, COUNT(*) as cnt \nFROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n  AND (length('$domain_exclude') = 0 or POSITION(lower('$domain_exclude') IN t.question_name) = 0)\nGROUP BY t.client_name, t.client_ip\nORDER by cnt desc \nLIMIT 100;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1352,7 +1352,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT t.client_name, t.client_ip, COUNT(*) as cnt\nFROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nGROUP BY t.client_name, t.client_ip \nORDER by cnt desc \nLIMIT 100 ;",
+          "rawSql": "SELECT t.client_name, t.client_ip, COUNT(*) as cnt\nFROM log_entries t\nwhere response_type='BLOCKED' AND\n  $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n  (length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n  AND (length('$domain_exclude') = 0 or POSITION(lower('$domain_exclude') IN t.question_name) = 0)\nGROUP BY t.client_name, t.client_ip \nORDER by cnt desc \nLIMIT 100 ;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1559,7 +1559,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select * FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n(length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\nORDER BY request_ts desc limit $query_limit;",
+          "rawSql": "select * FROM log_entries t\nWHERE $__timeFilter(t.request_ts) AND \n  t.question_type in ($dns_types) AND\n  t.client_name in ($client_names) AND \n  t.response_type in ($response_types) AND \n(length('$question') = 0 or POSITION(lower('$question') IN t.question_name) > 0)\n  AND (length('$domain_exclude') = 0 or POSITION(lower('$domain_exclude') IN t.question_name) = 0)\nORDER BY request_ts desc limit $query_limit;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1690,6 +1690,23 @@
         },
         "label": "Domain (contains)",
         "name": "question",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "label": "Domain (excludes)",
+        "name": "domain_exclude",
         "options": [
           {
             "selected": true,
