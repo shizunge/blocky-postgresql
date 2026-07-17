@@ -40,7 +40,7 @@ You want to allow `POSTGRES_USER`, which is probably used by *blocky* and has fu
 
 The script reads the environment variable `REVERSE_PROXIES`, then rejects accesses of `POSTGRES_USER` from the reverse proxies, only allows `READER_USERNAME` to access from the reverse proxies i.e. from the internet.
 
-`REVERSE_PROXIES` can contains IP addresses or host names. The *address* section of the [`pg_hba.conf` document](https://www.postgresql.org/docs/current/auth-pg-hba-conf.html) adescribes how host names work.
+`REVERSE_PROXIES` can contains IP addresses or host names. The *address* section of the [`pg_hba.conf` document](https://www.postgresql.org/docs/current/auth-pg-hba-conf.html) describes how host names work.
 
 Here is the code snippet.
 ```
